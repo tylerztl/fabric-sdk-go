@@ -1,0 +1,10 @@
+---
+
+application:
+  logLevel: 5
+
+  orgName: Org1
+
+  orgAdmin: Admin
+
+  ordererOrgName: OrdererOrg

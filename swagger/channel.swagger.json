@@ -1,0 +1,49 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "channel.proto",
+    "version": "version not set"
+  },
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/channel/create": {
+      "post": {
+        "operationId": "CreateChannel",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/protosCreateChannelResponse"
+            }
+          }
+        },
+        "tags": [
+          "Channel"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protosCreateChannelResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "transaction_id": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
