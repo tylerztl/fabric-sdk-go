@@ -31,6 +31,12 @@
 			"revisionTime": "2019-03-05T20:19:16Z"
 		},
 		{
+			"checksumSHA1": "OksAzF6VvpfTlte99lpVNV+iSnY=",
+			"path": "github.com/astaxie/beego/logs",
+			"revision": "3b86feab8af2f01bbf32bac5bc8135b9de4fa3ed",
+			"revisionTime": "2019-03-06T01:58:54Z"
+		},
+		{
 			"checksumSHA1": "0rido7hYHQtfq3UJzVT5LClLAWc=",
 			"origin": "github.com/hyperledger/fabric-sdk-go/vendor/github.com/beorn7/perks/quantile",
 			"path": "github.com/beorn7/perks/quantile",

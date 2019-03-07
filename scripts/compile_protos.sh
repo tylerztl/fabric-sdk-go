@@ -19,7 +19,5 @@ PROTO_ROOT_DIRS="$(dirname $PROTO_ROOT_FILES)"
 for protos in $(find "$PROTO_ROOT_DIRS" -name '*.proto' -exec dirname {} \; | sort | uniq) ; do
     protoc --proto_path="$PROTO_ROOT_DIRS" -I./third_party/googleapis \
             --go_out=plugins=grpc:$GOPATH/src \
-            --grpc-gateway_out=logtostderr=true:$GOPATH/src \
-            --swagger_out=logtostderr=true:./swagger \
             "$protos"/*.proto
 done

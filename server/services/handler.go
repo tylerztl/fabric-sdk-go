@@ -1,21 +1,23 @@
 package services
 
-import (
-	"fabric-sdk-go/server/sdkprovider"
-)
+import "fabric-sdk-go/server/sdkprovider"
 
 type Handler struct {
 	Provider sdkprovider.SdkProvider
 }
 
-var hanlder *Handler
+var hanlder = NewHandler()
 
-func Init() {
+func init() {
 	provider, err := sdkprovider.NewFabSdkProvider()
 	if err != nil {
 		panic(err)
 	}
-	hanlder = &Handler{Provider: provider}
+	hanlder.Provider = provider
+}
+
+func NewHandler() *Handler {
+	return &Handler{}
 }
 
 func GetSdkProvider() sdkprovider.SdkProvider {

@@ -2,14 +2,12 @@ package main
 
 import (
 	"fabric-sdk-go/server"
-	"fabric-sdk-go/server/helpers"
+	_ "fabric-sdk-go/server/services"
 	"fmt"
 	"os"
 
 	"github.com/spf13/cobra"
 )
-
-var logger = helpers.GetLogger()
 
 var rootCmd = &cobra.Command{
 	Use:   "grpc",
@@ -22,29 +20,23 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		defer func() {
 			if err := recover(); err != nil {
-				logger.Error("Recover error : %v", err)
+				fmt.Printf("Recover error : %v", err)
 			}
 		}()
 
 		err := server.Run()
-		logger.Error("server run error : %v", err)
+		fmt.Printf("server run error : %v", err)
 	},
 }
 
 func init() {
-	serverCmd.Flags().StringVarP(&server.ServerPort, "port", "p", "50052", "server port")
-	serverCmd.Flags().StringVarP(&server.SwaggerDir, "swagger-dir", "", "swagger", "path to the directory which contains swagger definitions")
+	serverCmd.Flags().StringVarP(&server.ServerPort, "port", "p", "8080", "server port")
 
 	rootCmd.AddCommand(serverCmd)
 }
 
-func Execute() {
+func main() {
 	if err := rootCmd.Execute(); err != nil {
-		fmt.Println(err)
 		os.Exit(-1)
 	}
-}
-
-func main() {
-	Execute()
 }

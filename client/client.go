@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	conn, err := grpc.Dial("localhost:50052", grpc.WithInsecure())
+	conn, err := grpc.Dial("localhost:8080", grpc.WithInsecure())
 	defer conn.Close()
 
 	if err != nil {
@@ -22,7 +22,7 @@ func main() {
 
 	r, err := c.CreateChannel(context, body)
 	if err != nil {
-		log.Println("2",err)
+		log.Println("2", err)
 	}
 
 	log.Println(r.Status, r.TransactionId)

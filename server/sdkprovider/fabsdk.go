@@ -30,7 +30,7 @@ func NewFabSdkProvider() (*FabSdkProvider, error) {
 
 func (f *FabSdkProvider) CreateChannel(channelID string) (string, error) {
 	//clientContext allows creation of transactions using the supplied identity as the credential.
-	clientContext := f.Sdk.Context(fabsdk.WithUser(appConf.Conf.OrgAdmin), fabsdk.WithOrg(appConf.Conf.OrgAdmin))
+	clientContext := f.Sdk.Context(fabsdk.WithUser(appConf.Conf.OrgAdmin), fabsdk.WithOrg(appConf.Conf.OrgName))
 
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
