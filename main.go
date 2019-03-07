@@ -2,13 +2,14 @@ package main
 
 import (
 	"fabric-sdk-go/server"
-	_ "fabric-sdk-go/server/helpers"
+	"fabric-sdk-go/server/helpers"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/spf13/cobra"
 )
+
+var logger = helpers.GetLogger()
 
 var rootCmd = &cobra.Command{
 	Use:   "grpc",
@@ -21,12 +22,12 @@ var serverCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		defer func() {
 			if err := recover(); err != nil {
-				log.Printf("Recover error : %v", err)
+				logger.Error("Recover error : %v", err)
 			}
 		}()
 
 		err := server.Run()
-		log.Printf("server run error : %v", err)
+		logger.Error("server run error : %v", err)
 	},
 }
 

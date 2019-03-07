@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"fmt"
 	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
@@ -11,22 +12,25 @@ type AppConf struct {
 }
 
 type Application struct {
-	LogLevel       int8   `yaml:"logLevel"`
-	OrgName        string `yaml:"orgName"`
-	OrgAdmin       string `yaml:"orgAdmin"`
+	LogPath  string `yaml:"logPath"`
+	LogLevel int8   `yaml:"logLevel"`
+	OrgName  string `yaml:"orgName"`
+	OrgAdmin string `yaml:"orgAdmin"`
 }
 
-func LoadAppConf() (*AppConf, error) {
+var appConfig = new(AppConf)
+
+func init() {
 	confPath := GetConfigPath("app.yaml")
 	yamlFile, err := ioutil.ReadFile(confPath)
 	if err != nil {
-		logger.Errorf("yamlFile.Get err: %v ", err)
-		return nil, err
+		panic(fmt.Errorf("yamlFile.Get err[%s]", err))
 	}
-	conf := new(AppConf)
-	if err = yaml.Unmarshal(yamlFile, conf); err != nil {
-		logger.Errorf("Unmarshal: %v", err)
-		return nil, err
+	if err = yaml.Unmarshal(yamlFile, appConfig); err != nil {
+		panic(fmt.Errorf("yamlFile.Unmarshal err[%s]", err))
 	}
-	return conf, nil
+}
+
+func GetAppConf() *AppConf {
+	return appConfig
 }

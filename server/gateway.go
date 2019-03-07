@@ -2,9 +2,9 @@ package server
 
 import (
 	pb "fabric-sdk-go/protos"
+	"fabric-sdk-go/server/helpers"
 	"fabric-sdk-go/server/services"
 	"fabric-sdk-go/third_party/swagger-ui"
-	"log"
 	"net"
 	"net/http"
 	"path"
@@ -22,21 +22,23 @@ var (
 	EndPoint   string
 )
 
+var logger = helpers.GetLogger()
+
 func Run() (err error) {
 	EndPoint = ":" + ServerPort
 	conn, err := net.Listen("tcp", EndPoint)
 	if err != nil {
-		log.Printf("TCP Listen err:%v\n", err)
+		logger.Error("TCP Listen err:%s", err)
 	}
 
 	services.Init()
 
 	//srv := newServer()
 	srv := newGrpc()
-	log.Printf("gRPC and https listen on: %s\n", ServerPort)
+	logger.Info("gRPC and https listen on: %s", ServerPort)
 
 	if err = srv.Serve(conn); err != nil {
-		log.Printf("ListenAndServe: %v\n", err)
+		logger.Error("ListenAndServe: %s", err)
 	}
 
 	return err
@@ -96,9 +98,8 @@ func grpcHandlerFunc(grpcServer *grpc.Server, otherHandler http.Handler) http.Ha
 }
 
 func serveSwaggerFile(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.URL.Path)
 	if !strings.HasSuffix(r.URL.Path, "swagger.json") {
-		log.Printf("Not Found: %s", r.URL.Path)
+		logger.Error("Not Found: %s", r.URL.Path)
 		http.NotFound(w, r)
 		return
 	}
@@ -106,7 +107,7 @@ func serveSwaggerFile(w http.ResponseWriter, r *http.Request) {
 	p := strings.TrimPrefix(r.URL.Path, "/swagger/")
 	p = path.Join(SwaggerDir, p)
 
-	log.Printf("Serving swagger-file: %s", p)
+	logger.Info("Serving swagger-file: %s", p)
 
 	http.ServeFile(w, r, p)
 }

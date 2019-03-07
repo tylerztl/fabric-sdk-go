@@ -1,7 +1,9 @@
 ---
 
 application:
-  logLevel: 5
+  logPath: logs/logagent.log
+
+  logLevel: 6
 
   orgName: org1
 
