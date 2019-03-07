@@ -22,7 +22,7 @@ client:
 
   # Which organization does this application instance belong to? The value must be the name of an org
   # defined under "organizations"
-  organization: org1
+  organization: Org1
 
   logging:
     level: info
@@ -148,7 +148,7 @@ channels:
 # list of participating organizations in this network
 #
 organizations:
-  org1:
+  Org1:
     mspid: Org1MSP
 
     # This org's MSP store (absolute path or relative to client.cryptoconfig)

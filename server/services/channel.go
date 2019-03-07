@@ -2,6 +2,7 @@ package services
 
 import (
 	"fabric-sdk-go/server/sdkprovider"
+	"fmt"
 	"golang.org/x/net/context"
 
 	pb "fabric-sdk-go/protos"
@@ -18,5 +19,9 @@ func NewChannelService() *ChannelService {
 }
 
 func (c *ChannelService) CreateChannel(ctx context.Context, r *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
-	return &pb.CreateChannelResponse{}, nil
+	transactionID, err := c.provider.CreateChannel(r.ChannelId)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return &pb.CreateChannelResponse{TransactionId: transactionID}, nil
 }

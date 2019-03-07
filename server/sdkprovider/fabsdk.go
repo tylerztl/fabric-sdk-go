@@ -35,7 +35,7 @@ func NewFabSdkProvider() (*FabSdkProvider, error) {
 
 func (f *FabSdkProvider) CreateChannel(channelID string) (string, error) {
 	//clientContext allows creation of transactions using the supplied identity as the credential.
-	clientContext := f.Sdk.Context(fabsdk.WithUser(f.AppConf.OrgAdmin), fabsdk.WithOrg(f.AppConf.OrdererOrgName))
+	clientContext := f.Sdk.Context(fabsdk.WithUser(f.AppConf.Conf.OrgAdmin), fabsdk.WithOrg(f.AppConf.Conf.OrgName))
 
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
@@ -44,12 +44,12 @@ func (f *FabSdkProvider) CreateChannel(channelID string) (string, error) {
 		logger.Errorf("Failed to create channel management client: %s", err)
 		return "", err
 	}
-	mspClient, err := mspclient.New(f.Sdk.Context(), mspclient.WithOrg(f.AppConf.OrgName))
+	mspClient, err := mspclient.New(f.Sdk.Context(), mspclient.WithOrg(f.AppConf.Conf.OrgName))
 	if err != nil {
 		logger.Error(err)
 		return "", err
 	}
-	adminIdentity, err := mspClient.GetSigningIdentity(f.AppConf.OrgAdmin)
+	adminIdentity, err := mspClient.GetSigningIdentity(f.AppConf.Conf.OrgAdmin)
 	if err != nil {
 		logger.Error(err)
 		return "", err

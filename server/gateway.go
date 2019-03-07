@@ -31,8 +31,8 @@ func Run() (err error) {
 
 	services.Init()
 
-	srv := newServer()
-
+	//srv := newServer()
+	srv := newGrpc()
 	log.Printf("gRPC and https listen on: %s\n", ServerPort)
 
 	if err = srv.Serve(conn); err != nil {

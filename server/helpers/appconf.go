@@ -7,14 +7,13 @@ import (
 )
 
 type AppConf struct {
-	Application `yaml:"application,inline"`
+	Conf Application `yaml:"application"`
 }
 
 type Application struct {
 	LogLevel       int8   `yaml:"logLevel"`
 	OrgName        string `yaml:"orgName"`
 	OrgAdmin       string `yaml:"orgAdmin"`
-	OrdererOrgName string `yaml:"ordererOrgName"`
 }
 
 func LoadAppConf() (*AppConf, error) {
