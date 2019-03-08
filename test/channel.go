@@ -3,6 +3,7 @@ package test
 import (
 	pb "fabric-sdk-go/protos"
 	"fmt"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
@@ -23,7 +24,7 @@ func CreateChannel(channelId string) (pb.StatusCode, error) {
 	body := &pb.CreateChannelRequest{ChannelId: channelId}
 
 	r, err := c.CreateChannel(context, body)
-	fmt.Printf("transaction id: %s", r.TransactionId)
+	fmt.Printf("StatusCode: %s, transaction id: %s, err: %v", r.Status, r.TransactionId, err)
 	return r.Status, err
 }
 
@@ -40,5 +41,6 @@ func JoinChannel(channelId string) (pb.StatusCode, error) {
 	body := &pb.JoinChannelRequest{ChannelId: channelId}
 
 	r, err := c.JoinChannel(context, body)
+	fmt.Printf("StatusCode: %s, err: %v", r.Status, err)
 	return r.Status, err
 }

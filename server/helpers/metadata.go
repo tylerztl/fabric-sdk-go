@@ -15,5 +15,3 @@ var CryptoConfigPath = "artifacts/channel/crypto-config"
 
 // Project is the Go project name relative to the Go Path
 var Project = "fabric-sdk-go"
-
-var OrdererEndpoint = "orderer.example.com"

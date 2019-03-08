@@ -13,6 +13,11 @@ package protos;
 enum StatusCode {
     SUCCESS = 0;
     FAILED = 1;
+    FAILED_NEW_CLIENT = 2;
+    FAILED_NEW_MSP_CLIENT = 3;
+    FAILED_GET_SIGNING_IDENTITY = 4;
+    FAILED_CREATE_CHANNEL = 5;
+    FAILED_JOIN_CHANNEL = 6;
 }
 
 message ServerStatus {

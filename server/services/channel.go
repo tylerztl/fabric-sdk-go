@@ -2,7 +2,6 @@ package services
 
 import (
 	"fabric-sdk-go/server/sdkprovider"
-	"fmt"
 	"golang.org/x/net/context"
 
 	pb "fabric-sdk-go/protos"
@@ -19,17 +18,11 @@ func NewChannelService() *ChannelService {
 }
 
 func (c *ChannelService) CreateChannel(ctx context.Context, r *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
-	transactionID, err := c.provider.CreateChannel(r.ChannelId)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return &pb.CreateChannelResponse{TransactionId: transactionID}, nil
+	transactionID, code, err := c.provider.CreateChannel(r.ChannelId)
+	return &pb.CreateChannelResponse{Status: code, TransactionId: transactionID}, err
 }
 
 func (c *ChannelService) JoinChannel(ctx context.Context, r *pb.JoinChannelRequest) (*pb.ServerStatus, error) {
-	err := c.provider.JoinChannel(r.ChannelId)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return &pb.ServerStatus{Status: pb.StatusCode_SUCCESS}, nil
+	code, err := c.provider.JoinChannel(r.ChannelId)
+	return &pb.ServerStatus{Status: code}, err
 }

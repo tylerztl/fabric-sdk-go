@@ -1,7 +1,9 @@
 package sdkprovider
 
 import (
+	pb "fabric-sdk-go/protos"
 	"fabric-sdk-go/server/helpers"
+
 	mspclient "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
@@ -11,7 +13,7 @@ import (
 )
 
 var logger = helpers.GetLogger()
-var appConf = helpers.GetAppConf()
+var appConf = helpers.GetAppConf().Conf
 
 type FabSdkProvider struct {
 	Sdk *fabsdk.FabricSDK
@@ -28,54 +30,57 @@ func NewFabSdkProvider() (*FabSdkProvider, error) {
 	return &FabSdkProvider{Sdk: sdk}, nil
 }
 
-func (f *FabSdkProvider) CreateChannel(channelID string) (string, error) {
+func (f *FabSdkProvider) CreateChannel(channelID string) (string, pb.StatusCode, error) {
 	//clientContext allows creation of transactions using the supplied identity as the credential.
-	clientContext := f.Sdk.Context(fabsdk.WithUser(appConf.Conf.OrgAdmin), fabsdk.WithOrg(appConf.Conf.OrgName))
+	clientContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
 
 	// Resource management client is responsible for managing channels (create/update channel)
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, err := resmgmt.New(clientContext)
 	if err != nil {
 		logger.Error("Failed to create channel management client: %s", err)
-		return "", err
+		return "", pb.StatusCode_FAILED_NEW_CLIENT, err
 	}
-	mspClient, err := mspclient.New(f.Sdk.Context(), mspclient.WithOrg(appConf.Conf.OrgName))
+	mspClient, err := mspclient.New(f.Sdk.Context(), mspclient.WithOrg(appConf.OrgName))
 	if err != nil {
 		logger.Error("New mspclient err: %s", err)
-		return "", err
+		return "", pb.StatusCode_FAILED_NEW_MSP_CLIENT, err
 	}
-	adminIdentity, err := mspClient.GetSigningIdentity(appConf.Conf.OrgAdmin)
+	adminIdentity, err := mspClient.GetSigningIdentity(appConf.OrgAdmin)
 	if err != nil {
 		logger.Error("MspClient getSigningIdentity err: %s", err)
-		return "", err
+		return "", pb.StatusCode_FAILED_GET_SIGNING_IDENTITY, err
 	}
 	req := resmgmt.SaveChannelRequest{ChannelID: channelID,
 		ChannelConfigPath: helpers.GetChannelConfigPath(channelID + ".tx"),
 		SigningIdentities: []msp.SigningIdentity{adminIdentity}}
 	txID, err := resMgmtClient.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts),
-		resmgmt.WithOrdererEndpoint(helpers.OrdererEndpoint))
+		resmgmt.WithOrdererEndpoint(appConf.OrdererEndpoint))
 	if err != nil {
 		logger.Error("Failed SaveChannel: %s", err)
-		return "", err
+		return "", pb.StatusCode_FAILED_CREATE_CHANNEL, err
 	}
-	return string(txID.TransactionID), nil
+	logger.Debug("Successfully created channel: %s", channelID)
+	return string(txID.TransactionID), pb.StatusCode_SUCCESS, nil
 }
 
-func (f *FabSdkProvider) JoinChannel(channelID string) error {
+func (f *FabSdkProvider) JoinChannel(channelID string) (pb.StatusCode, error) {
 	//prepare context
-	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.Conf.OrgAdmin), fabsdk.WithOrg(appConf.Conf.OrgName))
+	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
 
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
 		logger.Error("Failed to create channel management client: %s", err)
-		return err
+		return pb.StatusCode_FAILED_NEW_CLIENT, err
 	}
 
 	// Org peers join channel
-	err = orgResMgmt.JoinChannel(channelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(helpers.OrdererEndpoint))
+	err = orgResMgmt.JoinChannel(channelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(appConf.OrdererEndpoint))
 	if err != nil {
 		logger.Error("Org peers failed to JoinChannel: %v", err)
+		return pb.StatusCode_FAILED_JOIN_CHANNEL, err
 	}
-	return err
+	logger.Debug("Successfully joined channel: %s", channelID)
+	return pb.StatusCode_SUCCESS, err
 }

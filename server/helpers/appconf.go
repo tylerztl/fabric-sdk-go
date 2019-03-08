@@ -12,10 +12,11 @@ type AppConf struct {
 }
 
 type Application struct {
-	LogPath  string `yaml:"logPath"`
-	LogLevel int8   `yaml:"logLevel"`
-	OrgName  string `yaml:"orgName"`
-	OrgAdmin string `yaml:"orgAdmin"`
+	LogPath         string `yaml:"logPath"`
+	LogLevel        int8   `yaml:"logLevel"`
+	OrgName         string `yaml:"orgName"`
+	OrgAdmin        string `yaml:"orgAdmin"`
+	OrdererEndpoint string `yaml:"ordererEndpoint"`
 }
 
 var appConfig = new(AppConf)

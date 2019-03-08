@@ -3,8 +3,10 @@
 application:
   logPath: logs/logagent.log
 
-  logLevel: 6
+  logLevel: 7
 
   orgName: org1
-
+  # [Optional]. Used by create/join/update channel for admin client.
   orgAdmin: Admin
+  # [Optional]. Used by create/join/update channel.
+  ordererEndpoint: orderer.example.com

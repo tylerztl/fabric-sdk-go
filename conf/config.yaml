@@ -78,7 +78,7 @@ client:
     # requiring a key store. PKCS#11 based implementations does not.
     cryptoStore:
       # Specific to the underlying KeyValueStore that backs the crypto key store.
-      path: /tmp/msp
+      path: /tmp/fabric-client-kv-org1
 
   # [Optional] BCCSP config for the client. Used by GO SDK.
   BCCSP:
@@ -156,7 +156,6 @@ organizations:
 
     peers:
       - peer0.org1.example.com
-      - peer1.org1.example.com
 
     # [Optional]. Certificate Authorities issue certificates for identification purposes in a Fabric based
     # network. Typically certificates provisioning is done in a separate process outside of the

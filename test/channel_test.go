@@ -8,13 +8,13 @@ import (
 func TestCreateChannel(t *testing.T) {
 	status, err := CreateChannel("mychannel")
 	if status != pb.StatusCode_SUCCESS || err != nil {
-		t.Error("测试失败")
+		t.Error("Create channel failed")
 	}
 }
 
 func TestJoinChannel(t *testing.T) {
 	status, err := JoinChannel("mychannel")
 	if status != pb.StatusCode_SUCCESS || err != nil {
-		t.Error("测试失败")
+		t.Error("Join channel failed")
 	}
 }
