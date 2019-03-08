@@ -5,16 +5,11 @@ import (
 	"fmt"
 
 	"golang.org/x/net/context"
-	"google.golang.org/grpc"
 )
 
 func InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCode, error) {
-	conn, err := grpc.Dial(ServerAddress, grpc.WithInsecure())
+	conn := NewConn()
 	defer conn.Close()
-	if err != nil {
-		fmt.Println(err)
-		return pb.StatusCode_FAILED, err
-	}
 
 	c := pb.NewChaincodeClient(conn)
 	context := context.Background()
@@ -22,5 +17,24 @@ func InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCode, error) {
 
 	r, err := c.InstallCC(context, body)
 	fmt.Printf("StatusCode: %s, err: %v", r.Status, err)
+	return r.Status, err
+}
+
+func InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
+	code pb.StatusCode, err error) {
+	conn := NewConn()
+	defer conn.Close()
+
+	c := pb.NewChaincodeClient(conn)
+	context := context.Background()
+	body := &pb.InstantiateCCRequest{
+		ChannelId: channelID,
+		CcId:      ccID,
+		CcVersion: ccVersion,
+		CcPath:    ccPath,
+		Args:      args}
+
+	r, err := c.InstantiateCC(context, body)
+	fmt.Printf("StatusCode: %s, transaction id: %s, err: %v", r.Status, r.TransactionId, err)
 	return r.Status, err
 }

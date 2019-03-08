@@ -24,6 +24,13 @@
 			"revisionTime": "2019-03-05T20:19:16Z"
 		},
 		{
+			"checksumSHA1": "uJOp8topHA4MKdLAf2D4X9Nwwyo=",
+			"origin": "github.com/hyperledger/fabric-sdk-go/vendor/github.com/Knetic/govaluate",
+			"path": "github.com/Knetic/govaluate",
+			"revision": "bda01c9488d7b007adf7b6624c0b21ae99343d12",
+			"revisionTime": "2019-02-13T19:54:35Z"
+		},
+		{
 			"checksumSHA1": "ZxiGZhgjsygDpDkMO/1otiED13U=",
 			"origin": "github.com/hyperledger/fabric/vendor/github.com/Microsoft/go-winio",
 			"path": "github.com/Microsoft/go-winio",
@@ -1400,6 +1407,12 @@
 		{
 			"checksumSHA1": "ROe8sOySIzHhV9QHMK1glfSfjY0=",
 			"path": "github.com/hyperledger/fabric-sdk-go/test/metadata",
+			"revision": "bda01c9488d7b007adf7b6624c0b21ae99343d12",
+			"revisionTime": "2019-02-13T19:54:35Z"
+		},
+		{
+			"checksumSHA1": "9mNOEh+RfXgrzg1+HCGJzU2FLRY=",
+			"path": "github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl",
 			"revision": "bda01c9488d7b007adf7b6624c0b21ae99343d12",
 			"revisionTime": "2019-02-13T19:54:35Z"
 		},

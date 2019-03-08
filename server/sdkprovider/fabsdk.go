@@ -11,6 +11,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
 	packager "github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
+	"github.com/hyperledger/fabric-sdk-go/third_party/github.com/hyperledger/fabric/common/cauthdsl"
 )
 
 var logger = helpers.GetLogger()
@@ -39,7 +40,7 @@ func (f *FabSdkProvider) CreateChannel(channelID string) (string, pb.StatusCode,
 	// Supply user that has privileges to create channel (in this case orderer admin)
 	resMgmtClient, err := resmgmt.New(clientContext)
 	if err != nil {
-		logger.Error("Failed to create channel management client: %s", err)
+		logger.Error("Failed to new resource management client: %s", err)
 		return "", pb.StatusCode_FAILED_NEW_CLIENT, err
 	}
 	mspClient, err := mspclient.New(f.Sdk.Context(), mspclient.WithOrg(appConf.OrgName))
@@ -72,7 +73,7 @@ func (f *FabSdkProvider) JoinChannel(channelID string) (pb.StatusCode, error) {
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
-		logger.Error("Failed to create channel management client: %s", err)
+		logger.Error("Failed to new resource management client: %s", err)
 		return pb.StatusCode_FAILED_NEW_CLIENT, err
 	}
 
@@ -93,7 +94,7 @@ func (f *FabSdkProvider) InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCod
 	// Org resource management client
 	orgResMgmt, err := resmgmt.New(adminContext)
 	if err != nil {
-		logger.Error("Failed to create channel management client: %s", err)
+		logger.Error("Failed to new resource management client: %s", err)
 		return pb.StatusCode_FAILED_NEW_CLIENT, err
 	}
 
@@ -109,6 +110,33 @@ func (f *FabSdkProvider) InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCod
 		logger.Error("Failed InstallCC: %s", err)
 		return pb.StatusCode_FAILED_INSTALL_CC, err
 	}
-	logger.Debug("Successfully install cc: %s-%s", ccID, ccVersion)
+	logger.Debug("Successfully install chaincode [%s:%s]", ccID, ccVersion)
 	return pb.StatusCode_SUCCESS, err
+}
+
+func (f *FabSdkProvider) InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (string, pb.StatusCode, error) {
+	//prepare context
+	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
+
+	// Org resource management client
+	orgResMgmt, err := resmgmt.New(adminContext)
+	if err != nil {
+		logger.Error("Failed to new resource management client: %s", err)
+		return "", pb.StatusCode_FAILED_NEW_CLIENT, err
+	}
+
+	// Set up chaincode policy
+	ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
+	// Org resource manager will instantiate 'example_cc' on channel
+	resp, err := orgResMgmt.InstantiateCC(
+		channelID,
+		resmgmt.InstantiateCCRequest{Name: ccID, Path: ccPath, Version: ccVersion, Args: args, Policy: ccPolicy},
+		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
+	)
+	if err != nil {
+		logger.Error("Failed InstantiateCC: %s", err)
+		return "", pb.StatusCode_FAILED_INSTANTIATE_CC, err
+	}
+	logger.Debug("Successfully instantiate chaincode  [%s-%s]", ccID, ccVersion)
+	return string(resp.TransactionID), pb.StatusCode_SUCCESS, nil
 }

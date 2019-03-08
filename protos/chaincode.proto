@@ -17,10 +17,26 @@ import "common.proto";
 service Chaincode {
     rpc InstallCC (InstallCCRequest) returns (ServerStatus) {
     }
+
+    rpc InstantiateCC (InstantiateCCRequest) returns (InstantiateCCResponse) {
+    }
 }
 
 message InstallCCRequest {
     string cc_id = 1;
     string cc_version = 2;
     string cc_path = 3;
+}
+
+message InstantiateCCRequest {
+    string channel_id = 1;
+    string cc_id = 2;
+    string cc_version = 3;
+    string cc_path = 4;
+    repeated bytes args = 5;
+}
+
+message InstantiateCCResponse {
+    StatusCode status = 1;
+    string transaction_id = 2;
 }
