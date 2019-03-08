@@ -11,9 +11,14 @@ option go_package = "fabric-sdk-go/protos";
 
 package protos;
 
+import "common.proto";
+
 // Interface exported by the server.
 service Channel {
-    rpc CreateChannel (CreateChannelRequest) returns (CreateChannelResponse) {}
+    rpc CreateChannel (CreateChannelRequest) returns (CreateChannelResponse) {
+    }
+    rpc JoinChannel (JoinChannelRequest) returns (ServerStatus) {
+    }
 }
 
 message CreateChannelRequest {
@@ -21,6 +26,10 @@ message CreateChannelRequest {
 }
 
 message CreateChannelResponse {
-    int32 status = 1;
+    StatusCode status = 1;
     string transaction_id = 2;
+}
+
+message JoinChannelRequest {
+    string channel_id = 1;
 }

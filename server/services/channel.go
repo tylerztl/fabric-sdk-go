@@ -25,3 +25,11 @@ func (c *ChannelService) CreateChannel(ctx context.Context, r *pb.CreateChannelR
 	}
 	return &pb.CreateChannelResponse{TransactionId: transactionID}, nil
 }
+
+func (c *ChannelService) JoinChannel(ctx context.Context, r *pb.JoinChannelRequest) (*pb.ServerStatus, error) {
+	err := c.provider.JoinChannel(r.ChannelId)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return &pb.ServerStatus{Status: pb.StatusCode_SUCCESS}, nil
+}

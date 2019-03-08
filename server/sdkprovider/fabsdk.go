@@ -60,3 +60,22 @@ func (f *FabSdkProvider) CreateChannel(channelID string) (string, error) {
 	}
 	return string(txID.TransactionID), nil
 }
+
+func (f *FabSdkProvider) JoinChannel(channelID string) error {
+	//prepare context
+	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.Conf.OrgAdmin), fabsdk.WithOrg(appConf.Conf.OrgName))
+
+	// Org resource management client
+	orgResMgmt, err := resmgmt.New(adminContext)
+	if err != nil {
+		logger.Error("Failed to create channel management client: %s", err)
+		return err
+	}
+
+	// Org peers join channel
+	err = orgResMgmt.JoinChannel(channelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(helpers.OrdererEndpoint))
+	if err != nil {
+		logger.Error("Org peers failed to JoinChannel: %v", err)
+	}
+	return err
+}

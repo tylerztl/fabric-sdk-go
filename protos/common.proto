@@ -1,0 +1,20 @@
+/*
+Copyright zhigui Corp. All Rights Reserved.
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.fabric-sdk-go.protos";
+option go_package = "fabric-sdk-go/protos";
+
+package protos;
+
+enum StatusCode {
+    SUCCESS = 0;
+    FAILED = 1;
+}
+
+message ServerStatus {
+    StatusCode status = 1;
+}
