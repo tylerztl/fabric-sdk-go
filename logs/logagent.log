@@ -1,8 +1,0 @@
-2019/03/07 17:46:56.913 [I] [command.go:766]  gRPC and https listen on: 8080
-2019/03/07 17:47:32.791 [I] [command.go:766]  gRPC and https listen on: 8080
-2019/03/07 17:48:00.496 [I] [command.go:766]  gRPC and https listen on: 8080
-2019/03/07 17:48:11.658 [I] [command.go:766]  gRPC and https listen on: 8080
-2019/03/07 17:48:13.717 [E] [channel.pb.go:186]  Failed to create channel management client: %s
-2019/03/07 17:54:54.622 [I] [command.go:766]  gRPC and https listen on: 8080
-2019/03/07 17:55:50.719 [I] [command.go:766]  gRPC and https listen on: 8080
-2019/03/07 17:56:32.630 [I] [command.go:766]  gRPC and https listen on: 8081
