@@ -1104,6 +1104,12 @@
 			"revisionTime": "2019-02-13T19:54:35Z"
 		},
 		{
+			"checksumSHA1": "XycY4InpjYKEvoJMHKqFhZ9rVbk=",
+			"path": "github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager",
+			"revision": "bda01c9488d7b007adf7b6624c0b21ae99343d12",
+			"revisionTime": "2019-02-13T19:54:35Z"
+		},
+		{
 			"checksumSHA1": "3MI9AAtVrRQyVABWLkGOwgS27o0=",
 			"path": "github.com/hyperledger/fabric-sdk-go/pkg/fab/channel",
 			"revision": "bda01c9488d7b007adf7b6624c0b21ae99343d12",

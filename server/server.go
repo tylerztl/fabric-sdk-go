@@ -37,6 +37,7 @@ func newGrpc() *grpc.Server {
 	server := grpc.NewServer()
 	// TODO
 	pb.RegisterChannelServer(server, services.NewChannelService())
+	pb.RegisterChaincodeServer(server, services.NewChaincodeService())
 
 	return server
 }

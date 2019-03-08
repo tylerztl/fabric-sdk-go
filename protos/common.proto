@@ -18,6 +18,8 @@ enum StatusCode {
     FAILED_GET_SIGNING_IDENTITY = 4;
     FAILED_CREATE_CHANNEL = 5;
     FAILED_JOIN_CHANNEL = 6;
+    FAILED_NEW_CCPACKAGE = 7;
+    FAILED_INSTALL_CC = 8;
 }
 
 message ServerStatus {

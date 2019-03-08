@@ -9,6 +9,7 @@ import (
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/core/config"
+	packager "github.com/hyperledger/fabric-sdk-go/pkg/fab/ccpackager/gopackager"
 	"github.com/hyperledger/fabric-sdk-go/pkg/fabsdk"
 )
 
@@ -82,5 +83,32 @@ func (f *FabSdkProvider) JoinChannel(channelID string) (pb.StatusCode, error) {
 		return pb.StatusCode_FAILED_JOIN_CHANNEL, err
 	}
 	logger.Debug("Successfully joined channel: %s", channelID)
+	return pb.StatusCode_SUCCESS, err
+}
+
+func (f *FabSdkProvider) InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCode, error) {
+	//prepare context
+	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
+
+	// Org resource management client
+	orgResMgmt, err := resmgmt.New(adminContext)
+	if err != nil {
+		logger.Error("Failed to create channel management client: %s", err)
+		return pb.StatusCode_FAILED_NEW_CLIENT, err
+	}
+
+	ccPkg, err := packager.NewCCPackage(ccPath, helpers.GetDeployPath())
+	if err != nil {
+		logger.Error("New cc package err: %s", err)
+		return pb.StatusCode_FAILED_NEW_CCPACKAGE, err
+	}
+	// Install example cc to org peers
+	installCCReq := resmgmt.InstallCCRequest{Name: ccID, Path: ccPath, Version: ccVersion, Package: ccPkg}
+	_, err = orgResMgmt.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
+	if err != nil {
+		logger.Error("Failed InstallCC: %s", err)
+		return pb.StatusCode_FAILED_INSTALL_CC, err
+	}
+	logger.Debug("Successfully install cc: %s-%s", ccID, ccVersion)
 	return pb.StatusCode_SUCCESS, err
 }

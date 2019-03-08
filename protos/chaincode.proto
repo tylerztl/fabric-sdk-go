@@ -1,0 +1,26 @@
+/*
+Copyright zhigui Corp. All Rights Reserved.
+
+SPDX-License-Identifier: Apache-2.0
+*/
+
+syntax = "proto3";
+
+option java_package = "org.fabric-sdk-go.protos";
+option go_package = "fabric-sdk-go/protos";
+
+package protos;
+
+import "common.proto";
+
+// Interface exported by the server.
+service Chaincode {
+    rpc InstallCC (InstallCCRequest) returns (ServerStatus) {
+    }
+}
+
+message InstallCCRequest {
+    string cc_id = 1;
+    string cc_version = 2;
+    string cc_path = 3;
+}

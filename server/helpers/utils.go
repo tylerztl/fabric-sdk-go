@@ -23,3 +23,8 @@ func GetConfigPath(filename string) string {
 func GetChannelConfigPath(filename string) string {
 	return path.Join(goPath(), "src", Project, ChannelConfigPath, filename)
 }
+
+func GetDeployPath() string {
+	const ccPath = "conf"
+	return path.Join(goPath(), "src", Project, ccPath)
+}
