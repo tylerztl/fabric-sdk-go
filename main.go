@@ -2,7 +2,6 @@ package main
 
 import (
 	"fabric-sdk-go/server"
-	_ "fabric-sdk-go/server/services"
 	"fmt"
 	"os"
 
