@@ -1,4 +1,4 @@
-package services
+package grpchandler
 
 import (
 	"fabric-sdk-go/server/sdkprovider"
@@ -33,6 +33,6 @@ func (c *ChaincdoeService) InvokeCC(ctx context.Context, r *pb.InvokeCCRequest) 
 }
 
 func (c *ChaincdoeService) QueryCC(ctx context.Context, r *pb.QueryCCRequest) (*pb.QueryCCResponse, error) {
-	payload, code, err := c.provider.QueryCC(r.ChannelId, r.CcId,r.Func, r.Args)
+	payload, code, err := c.provider.QueryCC(r.ChannelId, r.CcId, r.Func, r.Args)
 	return &pb.QueryCCResponse{Status: code, Payload: payload}, err
 }

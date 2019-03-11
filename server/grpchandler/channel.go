@@ -1,4 +1,4 @@
-package services
+package grpchandler
 
 import (
 	"fabric-sdk-go/server/sdkprovider"

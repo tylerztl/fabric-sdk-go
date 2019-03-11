@@ -2,8 +2,8 @@ package server
 
 import (
 	pb "fabric-sdk-go/protos"
+	"fabric-sdk-go/server/grpchandler"
 	"fabric-sdk-go/server/helpers"
-	"fabric-sdk-go/server/services"
 	"net"
 
 	"google.golang.org/grpc"
@@ -36,8 +36,8 @@ func Run() (err error) {
 func newGrpc() *grpc.Server {
 	server := grpc.NewServer()
 	// TODO
-	pb.RegisterChannelServer(server, services.NewChannelService())
-	pb.RegisterChaincodeServer(server, services.NewChaincodeService())
+	pb.RegisterChannelServer(server, grpchandler.NewChannelService())
+	pb.RegisterChaincodeServer(server, grpchandler.NewChaincodeService())
 
 	return server
 }
