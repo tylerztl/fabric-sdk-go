@@ -7,8 +7,6 @@ import (
 	"golang.org/x/net/context"
 )
 
-
-
 func CreateChannel(channelId string) (pb.StatusCode, error) {
 	conn := NewConn()
 	defer conn.Close()

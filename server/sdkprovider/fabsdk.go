@@ -3,6 +3,7 @@ package sdkprovider
 import (
 	pb "fabric-sdk-go/protos"
 	"fabric-sdk-go/server/helpers"
+	"fmt"
 
 	mspclient "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
@@ -17,8 +18,16 @@ import (
 var logger = helpers.GetLogger()
 var appConf = helpers.GetAppConf().Conf
 
+type OrgInstance struct {
+	Admin       string
+	User        string
+	AdminClient *resmgmt.Client
+}
+
 type FabSdkProvider struct {
-	Sdk *fabsdk.FabricSDK
+	Sdk        *fabsdk.FabricSDK
+	Org        map[string]*OrgInstance
+	DefaultOrg string
 }
 
 func NewFabSdkProvider() (*FabSdkProvider, error) {
@@ -29,26 +38,43 @@ func NewFabSdkProvider() (*FabSdkProvider, error) {
 		return nil, err
 	}
 
-	return &FabSdkProvider{Sdk: sdk}, nil
+	provider := &FabSdkProvider{
+		Sdk: sdk,
+		Org: make(map[string]*OrgInstance),
+	}
+	for _, org := range appConf.OrgInfo {
+		//clientContext allows creation of transactions using the supplied identity as the credential.
+		adminContext := sdk.Context(fabsdk.WithUser(org.Admin), fabsdk.WithOrg(org.Name))
+
+		// Resource management client is responsible for managing channels (create/update channel)
+		// Supply user that has privileges to create channel (in this case orderer admin)
+		adminClient, err := resmgmt.New(adminContext)
+		if err != nil {
+			logger.Error("Failed to new resource management client: %s", err)
+			return nil, err
+		}
+		provider.Org[org.Name] = &OrgInstance{org.Admin, org.User, adminClient}
+		if org.Default {
+			provider.DefaultOrg = org.Name
+		}
+	}
+
+	return provider, nil
 }
 
 func (f *FabSdkProvider) CreateChannel(channelID string) (string, pb.StatusCode, error) {
-	//clientContext allows creation of transactions using the supplied identity as the credential.
-	clientContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
-
-	// Resource management client is responsible for managing channels (create/update channel)
-	// Supply user that has privileges to create channel (in this case orderer admin)
-	resMgmtClient, err := resmgmt.New(clientContext)
-	if err != nil {
-		logger.Error("Failed to new resource management client: %s", err)
-		return "", pb.StatusCode_FAILED_NEW_CLIENT, err
+	orgName := f.DefaultOrg
+	orgInstance, ok := f.Org[orgName]
+	if !ok {
+		logger.Error("Not found resource management client for org: %s", orgName)
+		return "", pb.StatusCode_INVALID_ADMIN_CLIENT, fmt.Errorf("Not found admin client for org:  %v", orgName)
 	}
-	mspClient, err := mspclient.New(f.Sdk.Context(), mspclient.WithOrg(appConf.OrgName))
+	mspClient, err := mspclient.New(f.Sdk.Context(), mspclient.WithOrg(orgName))
 	if err != nil {
 		logger.Error("New mspclient err: %s", err)
 		return "", pb.StatusCode_FAILED_NEW_MSP_CLIENT, err
 	}
-	adminIdentity, err := mspClient.GetSigningIdentity(appConf.OrgAdmin)
+	adminIdentity, err := mspClient.GetSigningIdentity(orgInstance.Admin)
 	if err != nil {
 		logger.Error("MspClient getSigningIdentity err: %s", err)
 		return "", pb.StatusCode_FAILED_GET_SIGNING_IDENTITY, err
@@ -56,7 +82,7 @@ func (f *FabSdkProvider) CreateChannel(channelID string) (string, pb.StatusCode,
 	req := resmgmt.SaveChannelRequest{ChannelID: channelID,
 		ChannelConfigPath: helpers.GetChannelConfigPath(channelID + ".tx"),
 		SigningIdentities: []msp.SigningIdentity{adminIdentity}}
-	txID, err := resMgmtClient.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts),
+	txID, err := orgInstance.AdminClient.SaveChannel(req, resmgmt.WithRetry(retry.DefaultResMgmtOpts),
 		resmgmt.WithOrdererEndpoint(appConf.OrdererEndpoint))
 	if err != nil {
 		logger.Error("Failed SaveChannel: %s", err)
@@ -67,18 +93,16 @@ func (f *FabSdkProvider) CreateChannel(channelID string) (string, pb.StatusCode,
 }
 
 func (f *FabSdkProvider) JoinChannel(channelID string) (pb.StatusCode, error) {
-	//prepare context
-	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
-
+	orgName := f.DefaultOrg
 	// Org resource management client
-	orgResMgmt, err := resmgmt.New(adminContext)
-	if err != nil {
-		logger.Error("Failed to new resource management client: %s", err)
-		return pb.StatusCode_FAILED_NEW_CLIENT, err
+	orgInstance, ok := f.Org[orgName]
+	if !ok {
+		logger.Error("Not found resource management client for org: %s", orgName)
+		return pb.StatusCode_INVALID_ADMIN_CLIENT, fmt.Errorf("Not found admin client for org:  %v", orgName)
 	}
 
 	// Org peers join channel
-	err = orgResMgmt.JoinChannel(channelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(appConf.OrdererEndpoint))
+	err := orgInstance.AdminClient.JoinChannel(channelID, resmgmt.WithRetry(retry.DefaultResMgmtOpts), resmgmt.WithOrdererEndpoint(appConf.OrdererEndpoint))
 	if err != nil {
 		logger.Error("Org peers failed to JoinChannel: %v", err)
 		return pb.StatusCode_FAILED_JOIN_CHANNEL, err
@@ -88,14 +112,12 @@ func (f *FabSdkProvider) JoinChannel(channelID string) (pb.StatusCode, error) {
 }
 
 func (f *FabSdkProvider) InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCode, error) {
-	//prepare context
-	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
-
+	orgName := f.DefaultOrg
 	// Org resource management client
-	orgResMgmt, err := resmgmt.New(adminContext)
-	if err != nil {
-		logger.Error("Failed to new resource management client: %s", err)
-		return pb.StatusCode_FAILED_NEW_CLIENT, err
+	orgInstance, ok := f.Org[orgName]
+	if !ok {
+		logger.Error("Not found resource management client for org: %s", orgName)
+		return pb.StatusCode_INVALID_ADMIN_CLIENT, fmt.Errorf("Not found admin client for org:  %v", orgName)
 	}
 
 	ccPkg, err := packager.NewCCPackage(ccPath, helpers.GetDeployPath())
@@ -105,7 +127,7 @@ func (f *FabSdkProvider) InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCod
 	}
 	// Install example cc to org peers
 	installCCReq := resmgmt.InstallCCRequest{Name: ccID, Path: ccPath, Version: ccVersion, Package: ccPkg}
-	_, err = orgResMgmt.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
+	_, err = orgInstance.AdminClient.InstallCC(installCCReq, resmgmt.WithRetry(retry.DefaultResMgmtOpts))
 	if err != nil {
 		logger.Error("Failed InstallCC: %s", err)
 		return pb.StatusCode_FAILED_INSTALL_CC, err
@@ -115,20 +137,17 @@ func (f *FabSdkProvider) InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCod
 }
 
 func (f *FabSdkProvider) InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (string, pb.StatusCode, error) {
-	//prepare context
-	adminContext := f.Sdk.Context(fabsdk.WithUser(appConf.OrgAdmin), fabsdk.WithOrg(appConf.OrgName))
-
+	orgName := f.DefaultOrg
 	// Org resource management client
-	orgResMgmt, err := resmgmt.New(adminContext)
-	if err != nil {
-		logger.Error("Failed to new resource management client: %s", err)
-		return "", pb.StatusCode_FAILED_NEW_CLIENT, err
+	orgInstance, ok := f.Org[orgName]
+	if !ok {
+		logger.Error("Not found resource management client for org: %s", orgName)
+		return "", pb.StatusCode_INVALID_ADMIN_CLIENT, fmt.Errorf("Not found admin client for org:  %v", orgName)
 	}
-
 	// Set up chaincode policy
 	ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
 	// Org resource manager will instantiate 'example_cc' on channel
-	resp, err := orgResMgmt.InstantiateCC(
+	resp, err := orgInstance.AdminClient.InstantiateCC(
 		channelID,
 		resmgmt.InstantiateCCRequest{Name: ccID, Path: ccPath, Version: ccVersion, Args: args, Policy: ccPolicy},
 		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
