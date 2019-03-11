@@ -22,6 +22,10 @@ enum StatusCode {
     FAILED_INSTALL_CC = 8;
     FAILED_INSTANTIATE_CC = 9;
     INVALID_ADMIN_CLIENT = 10;
+    INVALID_USER_CLIENT = 11;
+    NOT_FOUND_ORG_INSTANCE = 12;
+    FAILED_INVOKE_CC = 13;
+    FAILED_QUERY_CC = 14;
 }
 
 message ServerStatus {

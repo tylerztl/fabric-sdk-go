@@ -5,6 +5,7 @@ import (
 	"fabric-sdk-go/server/helpers"
 	"fmt"
 
+	"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"
 	mspclient "github.com/hyperledger/fabric-sdk-go/pkg/client/msp"
 	"github.com/hyperledger/fabric-sdk-go/pkg/client/resmgmt"
 	"github.com/hyperledger/fabric-sdk-go/pkg/common/errors/retry"
@@ -62,7 +63,7 @@ func NewFabSdkProvider() (*FabSdkProvider, error) {
 	return provider, nil
 }
 
-func (f *FabSdkProvider) CreateChannel(channelID string) (string, pb.StatusCode, error) {
+func (f *FabSdkProvider) CreateChannel(channelID string) (helpers.TransactionID, pb.StatusCode, error) {
 	orgName := f.DefaultOrg
 	orgInstance, ok := f.Org[orgName]
 	if !ok {
@@ -89,7 +90,7 @@ func (f *FabSdkProvider) CreateChannel(channelID string) (string, pb.StatusCode,
 		return "", pb.StatusCode_FAILED_CREATE_CHANNEL, err
 	}
 	logger.Debug("Successfully created channel: %s", channelID)
-	return string(txID.TransactionID), pb.StatusCode_SUCCESS, nil
+	return helpers.TransactionID(txID.TransactionID), pb.StatusCode_SUCCESS, nil
 }
 
 func (f *FabSdkProvider) JoinChannel(channelID string) (pb.StatusCode, error) {
@@ -136,7 +137,7 @@ func (f *FabSdkProvider) InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCod
 	return pb.StatusCode_SUCCESS, err
 }
 
-func (f *FabSdkProvider) InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (string, pb.StatusCode, error) {
+func (f *FabSdkProvider) InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (helpers.TransactionID, pb.StatusCode, error) {
 	orgName := f.DefaultOrg
 	// Org resource management client
 	orgInstance, ok := f.Org[orgName]
@@ -157,5 +158,64 @@ func (f *FabSdkProvider) InstantiateCC(channelID, ccID, ccVersion, ccPath string
 		return "", pb.StatusCode_FAILED_INSTANTIATE_CC, err
 	}
 	logger.Debug("Successfully instantiate chaincode  [%s-%s]", ccID, ccVersion)
-	return string(resp.TransactionID), pb.StatusCode_SUCCESS, nil
+	return helpers.TransactionID(resp.TransactionID), pb.StatusCode_SUCCESS, nil
+}
+
+func (f *FabSdkProvider) InvokeCC(channelID, ccID, function string, args [][]byte) (helpers.TransactionID, pb.StatusCode, error) {
+	orgName := f.DefaultOrg
+	// Org resource management client
+	orgInstance, ok := f.Org[orgName]
+	if !ok {
+		logger.Error("Not found resource management client for org: %s", orgName)
+		return "", pb.StatusCode_NOT_FOUND_ORG_INSTANCE, fmt.Errorf("Not found org instance for org:  %v", orgName)
+	}
+	//prepare context
+	userContext := f.Sdk.ChannelContext(channelID, fabsdk.WithUser(orgInstance.User), fabsdk.WithOrg(orgName))
+	//get channel client
+	chClient, err := channel.New(userContext)
+	if err != nil {
+		logger.Error("Failed to create new channel client: %v", err)
+		return "", pb.StatusCode_INVALID_USER_CLIENT, fmt.Errorf("Failed to create new channel client:  %s", orgName)
+	}
+	// Synchronous transaction
+	response, err := chClient.Execute(
+		channel.Request{
+			ChaincodeID: ccID,
+			Fcn:         function,
+			Args:        args,
+		},
+		channel.WithRetry(retry.DefaultChannelOpts))
+	if err != nil {
+		logger.Error("Failed InvokeCC: %s", err)
+		return "", pb.StatusCode_FAILED_INVOKE_CC, err
+	}
+	logger.Debug("Successfully invoke chaincode  [%s:%v]", ccID, function)
+	return helpers.TransactionID(response.TransactionID), pb.StatusCode_SUCCESS, nil
+}
+
+func (f *FabSdkProvider) QueryCC(channelID, ccID, function string, args [][]byte) ([]byte, pb.StatusCode, error) {
+	orgName := f.DefaultOrg
+	// Org resource management client
+	orgInstance, ok := f.Org[orgName]
+	if !ok {
+		logger.Error("Not found resource management client for org: %s", orgName)
+		return nil, pb.StatusCode_NOT_FOUND_ORG_INSTANCE, fmt.Errorf("Not found  org instance for org:  %v", orgName)
+	}
+	//prepare context
+	userContext := f.Sdk.ChannelContext(channelID, fabsdk.WithUser(orgInstance.User), fabsdk.WithOrg(orgName))
+	//get channel client
+	chClient, err := channel.New(userContext)
+	if err != nil {
+		logger.Error("Failed to create new channel client: %v", err)
+		return nil, pb.StatusCode_INVALID_USER_CLIENT, fmt.Errorf("Failed to create new channel client:  %s", orgName)
+	}
+
+	response, err := chClient.Query(channel.Request{ChaincodeID: ccID, Fcn: function, Args: args},
+		channel.WithRetry(retry.DefaultChannelOpts))
+	if err != nil {
+		logger.Error("Failed QueryCC: %s", err)
+		return nil, pb.StatusCode_FAILED_QUERY_CC, err
+	}
+	logger.Debug("Successfully query chaincode  [%s:%v]", ccID, function)
+	return response.Payload, pb.StatusCode_SUCCESS, nil
 }

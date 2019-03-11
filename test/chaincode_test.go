@@ -19,3 +19,17 @@ func TestInstantiateCC(t *testing.T) {
 		t.Error("Instantiate cc failed")
 	}
 }
+
+func TestInvokeCC(t *testing.T) {
+	status, err := InvokeCC("mychannel", "example_cc", "move", [][]byte{[]byte("a"), []byte("b"), []byte("10")})
+	if status != pb.StatusCode_SUCCESS || err != nil {
+		t.Error("Invoke cc failed")
+	}
+}
+
+func TestQueryCC(t *testing.T) {
+	status, err := QueryCC("mychannel", "example_cc", "query", [][]byte{[]byte("a")})
+	if status != pb.StatusCode_SUCCESS || err != nil {
+		t.Error("Query cc failed")
+	}
+}

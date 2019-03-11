@@ -15,11 +15,10 @@ import "common.proto";
 
 // Interface exported by the server.
 service Chaincode {
-    rpc InstallCC (InstallCCRequest) returns (ServerStatus) {
-    }
-
-    rpc InstantiateCC (InstantiateCCRequest) returns (InstantiateCCResponse) {
-    }
+    rpc InstallCC (InstallCCRequest) returns (ServerStatus) {}
+    rpc InstantiateCC (InstantiateCCRequest) returns (InstantiateCCResponse) {}
+    rpc InvokeCC (InvokeCCRequest) returns (InvokeCCResponse) {}
+    rpc QueryCC (QueryCCRequest) returns (QueryCCResponse) {}
 }
 
 message InstallCCRequest {
@@ -39,4 +38,28 @@ message InstantiateCCRequest {
 message InstantiateCCResponse {
     StatusCode status = 1;
     string transaction_id = 2;
+}
+
+message InvokeCCRequest {
+    string channel_id = 1;
+    string cc_id = 2;
+    string func = 3;
+    repeated bytes args = 4;
+}
+
+message InvokeCCResponse {
+    StatusCode status = 1;
+    string transaction_id = 2;
+}
+
+message QueryCCRequest {
+    string channel_id = 1;
+    string cc_id = 2;
+    string func = 3;
+    repeated bytes args = 4;
+}
+
+message QueryCCResponse {
+    StatusCode status = 1;
+    bytes payload = 2;
 }

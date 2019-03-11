@@ -19,7 +19,7 @@ func NewChannelService() *ChannelService {
 
 func (c *ChannelService) CreateChannel(ctx context.Context, r *pb.CreateChannelRequest) (*pb.CreateChannelResponse, error) {
 	transactionID, code, err := c.provider.CreateChannel(r.ChannelId)
-	return &pb.CreateChannelResponse{Status: code, TransactionId: transactionID}, err
+	return &pb.CreateChannelResponse{Status: code, TransactionId: string(transactionID)}, err
 }
 
 func (c *ChannelService) JoinChannel(ctx context.Context, r *pb.JoinChannelRequest) (*pb.ServerStatus, error) {

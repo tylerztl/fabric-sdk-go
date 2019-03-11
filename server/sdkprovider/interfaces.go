@@ -1,11 +1,15 @@
 package sdkprovider
 
-import "fabric-sdk-go/protos"
+import (
+	pb "fabric-sdk-go/protos"
+	. "fabric-sdk-go/server/helpers"
+)
 
 type SdkProvider interface {
-	CreateChannel(channelID string) (transactionID string, code protos.StatusCode, err error)
-	JoinChannel(channelID string) (code protos.StatusCode, err error)
-	InstallCC(ccID, ccVersion, ccPath string) (code protos.StatusCode, err error)
-	InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (transactionID string,
-		code protos.StatusCode, err error)
+	CreateChannel(channelID string) (TransactionID, pb.StatusCode, error)
+	JoinChannel(channelID string) (pb.StatusCode, error)
+	InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCode, error)
+	InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (TransactionID, pb.StatusCode, error)
+	InvokeCC(channelID, ccID, function string, args [][]byte) (TransactionID, pb.StatusCode, error)
+	QueryCC(channelID, ccID, function string, args [][]byte) ([]byte, pb.StatusCode, error)
 }

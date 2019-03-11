@@ -195,37 +195,268 @@ func (m *InstantiateCCResponse) GetTransactionId() string {
 	return ""
 }
 
+type InvokeCCRequest struct {
+	ChannelId            string   `protobuf:"bytes,1,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
+	CcId                 string   `protobuf:"bytes,2,opt,name=cc_id,json=ccId,proto3" json:"cc_id,omitempty"`
+	Func                 string   `protobuf:"bytes,3,opt,name=func,proto3" json:"func,omitempty"`
+	Args                 [][]byte `protobuf:"bytes,4,rep,name=args,proto3" json:"args,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *InvokeCCRequest) Reset()         { *m = InvokeCCRequest{} }
+func (m *InvokeCCRequest) String() string { return proto.CompactTextString(m) }
+func (*InvokeCCRequest) ProtoMessage()    {}
+func (*InvokeCCRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_97136ef4b384cc22, []int{3}
+}
+
+func (m *InvokeCCRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InvokeCCRequest.Unmarshal(m, b)
+}
+func (m *InvokeCCRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InvokeCCRequest.Marshal(b, m, deterministic)
+}
+func (m *InvokeCCRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InvokeCCRequest.Merge(m, src)
+}
+func (m *InvokeCCRequest) XXX_Size() int {
+	return xxx_messageInfo_InvokeCCRequest.Size(m)
+}
+func (m *InvokeCCRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_InvokeCCRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InvokeCCRequest proto.InternalMessageInfo
+
+func (m *InvokeCCRequest) GetChannelId() string {
+	if m != nil {
+		return m.ChannelId
+	}
+	return ""
+}
+
+func (m *InvokeCCRequest) GetCcId() string {
+	if m != nil {
+		return m.CcId
+	}
+	return ""
+}
+
+func (m *InvokeCCRequest) GetFunc() string {
+	if m != nil {
+		return m.Func
+	}
+	return ""
+}
+
+func (m *InvokeCCRequest) GetArgs() [][]byte {
+	if m != nil {
+		return m.Args
+	}
+	return nil
+}
+
+type InvokeCCResponse struct {
+	Status               StatusCode `protobuf:"varint,1,opt,name=status,proto3,enum=protos.StatusCode" json:"status,omitempty"`
+	TransactionId        string     `protobuf:"bytes,2,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *InvokeCCResponse) Reset()         { *m = InvokeCCResponse{} }
+func (m *InvokeCCResponse) String() string { return proto.CompactTextString(m) }
+func (*InvokeCCResponse) ProtoMessage()    {}
+func (*InvokeCCResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_97136ef4b384cc22, []int{4}
+}
+
+func (m *InvokeCCResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_InvokeCCResponse.Unmarshal(m, b)
+}
+func (m *InvokeCCResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_InvokeCCResponse.Marshal(b, m, deterministic)
+}
+func (m *InvokeCCResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_InvokeCCResponse.Merge(m, src)
+}
+func (m *InvokeCCResponse) XXX_Size() int {
+	return xxx_messageInfo_InvokeCCResponse.Size(m)
+}
+func (m *InvokeCCResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_InvokeCCResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_InvokeCCResponse proto.InternalMessageInfo
+
+func (m *InvokeCCResponse) GetStatus() StatusCode {
+	if m != nil {
+		return m.Status
+	}
+	return StatusCode_SUCCESS
+}
+
+func (m *InvokeCCResponse) GetTransactionId() string {
+	if m != nil {
+		return m.TransactionId
+	}
+	return ""
+}
+
+type QueryCCRequest struct {
+	ChannelId            string   `protobuf:"bytes,1,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
+	CcId                 string   `protobuf:"bytes,2,opt,name=cc_id,json=ccId,proto3" json:"cc_id,omitempty"`
+	Func                 string   `protobuf:"bytes,3,opt,name=func,proto3" json:"func,omitempty"`
+	Args                 [][]byte `protobuf:"bytes,4,rep,name=args,proto3" json:"args,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *QueryCCRequest) Reset()         { *m = QueryCCRequest{} }
+func (m *QueryCCRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryCCRequest) ProtoMessage()    {}
+func (*QueryCCRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_97136ef4b384cc22, []int{5}
+}
+
+func (m *QueryCCRequest) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryCCRequest.Unmarshal(m, b)
+}
+func (m *QueryCCRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryCCRequest.Marshal(b, m, deterministic)
+}
+func (m *QueryCCRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCCRequest.Merge(m, src)
+}
+func (m *QueryCCRequest) XXX_Size() int {
+	return xxx_messageInfo_QueryCCRequest.Size(m)
+}
+func (m *QueryCCRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCCRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryCCRequest proto.InternalMessageInfo
+
+func (m *QueryCCRequest) GetChannelId() string {
+	if m != nil {
+		return m.ChannelId
+	}
+	return ""
+}
+
+func (m *QueryCCRequest) GetCcId() string {
+	if m != nil {
+		return m.CcId
+	}
+	return ""
+}
+
+func (m *QueryCCRequest) GetFunc() string {
+	if m != nil {
+		return m.Func
+	}
+	return ""
+}
+
+func (m *QueryCCRequest) GetArgs() [][]byte {
+	if m != nil {
+		return m.Args
+	}
+	return nil
+}
+
+type QueryCCResponse struct {
+	Status               StatusCode `protobuf:"varint,1,opt,name=status,proto3,enum=protos.StatusCode" json:"status,omitempty"`
+	Payload              []byte     `protobuf:"bytes,2,opt,name=payload,proto3" json:"payload,omitempty"`
+	XXX_NoUnkeyedLiteral struct{}   `json:"-"`
+	XXX_unrecognized     []byte     `json:"-"`
+	XXX_sizecache        int32      `json:"-"`
+}
+
+func (m *QueryCCResponse) Reset()         { *m = QueryCCResponse{} }
+func (m *QueryCCResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryCCResponse) ProtoMessage()    {}
+func (*QueryCCResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_97136ef4b384cc22, []int{6}
+}
+
+func (m *QueryCCResponse) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_QueryCCResponse.Unmarshal(m, b)
+}
+func (m *QueryCCResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_QueryCCResponse.Marshal(b, m, deterministic)
+}
+func (m *QueryCCResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryCCResponse.Merge(m, src)
+}
+func (m *QueryCCResponse) XXX_Size() int {
+	return xxx_messageInfo_QueryCCResponse.Size(m)
+}
+func (m *QueryCCResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryCCResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryCCResponse proto.InternalMessageInfo
+
+func (m *QueryCCResponse) GetStatus() StatusCode {
+	if m != nil {
+		return m.Status
+	}
+	return StatusCode_SUCCESS
+}
+
+func (m *QueryCCResponse) GetPayload() []byte {
+	if m != nil {
+		return m.Payload
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*InstallCCRequest)(nil), "protos.InstallCCRequest")
 	proto.RegisterType((*InstantiateCCRequest)(nil), "protos.InstantiateCCRequest")
 	proto.RegisterType((*InstantiateCCResponse)(nil), "protos.InstantiateCCResponse")
+	proto.RegisterType((*InvokeCCRequest)(nil), "protos.InvokeCCRequest")
+	proto.RegisterType((*InvokeCCResponse)(nil), "protos.InvokeCCResponse")
+	proto.RegisterType((*QueryCCRequest)(nil), "protos.QueryCCRequest")
+	proto.RegisterType((*QueryCCResponse)(nil), "protos.QueryCCResponse")
 }
 
 func init() { proto.RegisterFile("chaincode.proto", fileDescriptor_97136ef4b384cc22) }
 
 var fileDescriptor_97136ef4b384cc22 = []byte{
-	// 335 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0xcf, 0x4f, 0xc2, 0x30,
-	0x14, 0xc7, 0x19, 0xbf, 0xcc, 0x5e, 0x00, 0x4d, 0xc5, 0xb8, 0x10, 0x49, 0xc8, 0x12, 0x13, 0x62,
-	0x02, 0x1a, 0x3c, 0x7b, 0x71, 0xa7, 0x5d, 0x8c, 0x99, 0x89, 0x07, 0x2f, 0x4b, 0x79, 0xad, 0x6c,
-	0x0a, 0x2d, 0xb6, 0x85, 0x3f, 0xc5, 0x83, 0x7f, 0xad, 0xb1, 0x05, 0x06, 0x4b, 0xf0, 0xb4, 0xe5,
-	0xf3, 0xb6, 0xf7, 0xfd, 0xf4, 0xbd, 0xc2, 0x29, 0x66, 0x34, 0x17, 0x28, 0x19, 0x1f, 0x2f, 0x95,
-	0x34, 0x92, 0x34, 0xed, 0x43, 0xf7, 0x5a, 0x28, 0x17, 0x0b, 0x29, 0x1c, 0x0d, 0x53, 0x38, 0x8b,
-	0x85, 0x36, 0x74, 0x3e, 0x8f, 0xa2, 0x84, 0x7f, 0xad, 0xb8, 0x36, 0xe4, 0x1c, 0x1a, 0x88, 0x69,
-	0xce, 0x02, 0x6f, 0xe0, 0x0d, 0xfd, 0xa4, 0x8e, 0x18, 0x33, 0xd2, 0x07, 0x40, 0x4c, 0xd7, 0x5c,
-	0xe9, 0x5c, 0x8a, 0xa0, 0x6a, 0x2b, 0x3e, 0xe2, 0xab, 0x03, 0xe4, 0x12, 0x4e, 0x10, 0xd3, 0x25,
-	0x35, 0x59, 0x50, 0xb3, 0xb5, 0x26, 0xe2, 0x33, 0x35, 0x59, 0xf8, 0xed, 0x41, 0xd7, 0x26, 0x08,
-	0x93, 0x53, 0xc3, 0x8b, 0x94, 0xbf, 0x86, 0x19, 0x15, 0x82, 0xcf, 0x8b, 0x28, 0x7f, 0x43, 0x62,
-	0x56, 0x48, 0x54, 0x8f, 0x4a, 0xd4, 0xfe, 0x91, 0xa8, 0xef, 0x4b, 0x10, 0x02, 0x75, 0xaa, 0x66,
-	0x3a, 0x68, 0x0c, 0x6a, 0xc3, 0x56, 0x62, 0xdf, 0xc3, 0x0f, 0xb8, 0x28, 0x79, 0xe9, 0xa5, 0x14,
-	0x9a, 0x93, 0x1b, 0x68, 0x6a, 0x43, 0xcd, 0x4a, 0x5b, 0xa9, 0xce, 0x84, 0xb8, 0x51, 0xe9, 0xf1,
-	0x8b, 0xa5, 0x91, 0x64, 0x3c, 0xd9, 0x7c, 0x41, 0xae, 0xa1, 0x63, 0x14, 0x15, 0x9a, 0xa2, 0xc9,
-	0xa5, 0x28, 0x74, 0xdb, 0x7b, 0x34, 0x66, 0x93, 0x1f, 0x0f, 0xfc, 0x68, 0xbb, 0x0f, 0xf2, 0x00,
-	0xfe, 0x6e, 0xe6, 0x24, 0xd8, 0x76, 0x2f, 0xaf, 0xa1, 0xd7, 0xdd, 0xe5, 0x72, 0xb5, 0xe6, 0xca,
-	0xa5, 0x87, 0x15, 0xf2, 0x04, 0xed, 0x03, 0x71, 0x72, 0x75, 0xd0, 0xa2, 0x34, 0xe7, 0x5e, 0xff,
-	0x48, 0xd5, 0x9d, 0x36, 0xac, 0x3c, 0xde, 0x41, 0x20, 0xd5, 0x6c, 0xfc, 0x4e, 0xa7, 0x2a, 0xc7,
-	0x91, 0x66, 0x9f, 0xa3, 0x99, 0xdc, 0xfc, 0xf3, 0xd6, 0x3d, 0xa0, 0xb7, 0x8e, 0x4e, 0xdd, 0x55,
-	0xba, 0xff, 0x0d, 0x00, 0x00, 0xff, 0xff, 0xea, 0xaa, 0x8d, 0x26, 0x64, 0x02, 0x00, 0x00,
+	// 438 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x54, 0xdf, 0x8b, 0xd3, 0x40,
+	0x10, 0xbe, 0xb6, 0xb9, 0xd6, 0x0c, 0xbd, 0x56, 0xc6, 0x6a, 0x43, 0xf0, 0xe0, 0x08, 0x08, 0x87,
+	0x70, 0x55, 0xce, 0x57, 0x45, 0xb0, 0x4f, 0x79, 0x11, 0x8d, 0xa0, 0xe0, 0x4b, 0xd9, 0x9b, 0xec,
+	0xb5, 0xf1, 0xd2, 0xdd, 0xba, 0xbb, 0x29, 0xdc, 0x3f, 0x22, 0xf8, 0xdf, 0xca, 0xed, 0xe6, 0x47,
+	0xd3, 0xa3, 0x3e, 0x28, 0xfa, 0x94, 0xcd, 0x37, 0x93, 0xf9, 0xbe, 0x6f, 0x67, 0x26, 0x30, 0xa6,
+	0x15, 0xcb, 0x04, 0xc9, 0x94, 0xcf, 0x36, 0x4a, 0x1a, 0x89, 0x7d, 0xfb, 0xd0, 0xe1, 0x90, 0xe4,
+	0x7a, 0x2d, 0x85, 0x43, 0xa3, 0x05, 0x3c, 0x8c, 0x85, 0x36, 0x2c, 0xcf, 0xe7, 0xf3, 0x84, 0x7f,
+	0x2f, 0xb8, 0x36, 0xf8, 0x08, 0x8e, 0x89, 0x16, 0x59, 0x1a, 0x74, 0xce, 0x3a, 0xe7, 0x7e, 0xe2,
+	0x11, 0xc5, 0x29, 0x9e, 0x02, 0x10, 0x2d, 0xb6, 0x5c, 0xe9, 0x4c, 0x8a, 0xa0, 0x6b, 0x23, 0x3e,
+	0xd1, 0x67, 0x07, 0xe0, 0x14, 0x06, 0x44, 0x8b, 0x0d, 0x33, 0xab, 0xa0, 0x67, 0x63, 0x7d, 0xa2,
+	0x0f, 0xcc, 0xac, 0xa2, 0x1f, 0x1d, 0x98, 0x58, 0x06, 0x61, 0x32, 0x66, 0x78, 0xc3, 0x72, 0x57,
+	0x70, 0xc5, 0x84, 0xe0, 0x79, 0x43, 0xe5, 0x97, 0x48, 0x9c, 0x36, 0x22, 0xba, 0x07, 0x45, 0xf4,
+	0x7e, 0x23, 0xc2, 0xdb, 0x15, 0x81, 0x08, 0x1e, 0x53, 0x4b, 0x1d, 0x1c, 0x9f, 0xf5, 0xce, 0x87,
+	0x89, 0x3d, 0x47, 0xdf, 0xe0, 0xf1, 0x9e, 0x2e, 0xbd, 0x91, 0x42, 0x73, 0x7c, 0x0e, 0x7d, 0x6d,
+	0x98, 0x29, 0xb4, 0x15, 0x35, 0xba, 0x44, 0x77, 0x55, 0x7a, 0xf6, 0xc9, 0xa2, 0x73, 0x99, 0xf2,
+	0xa4, 0xcc, 0xc0, 0x67, 0x30, 0x32, 0x8a, 0x09, 0xcd, 0xc8, 0x64, 0x52, 0x34, 0x72, 0x4f, 0x76,
+	0xd0, 0x38, 0x8d, 0xd6, 0x30, 0x8e, 0xc5, 0x56, 0xde, 0xfc, 0xa5, 0x7d, 0x04, 0xef, 0xba, 0x10,
+	0x54, 0x1a, 0xb7, 0xe7, 0xda, 0x9a, 0xb7, 0x63, 0x8d, 0xdf, 0x35, 0xb5, 0xa2, 0xfb, 0x77, 0xae,
+	0x72, 0x18, 0x7d, 0x2c, 0xb8, 0xba, 0xfd, 0x3f, 0xa6, 0xbe, 0xc0, 0xb8, 0x66, 0xfb, 0x03, 0x4f,
+	0x01, 0x0c, 0x36, 0xec, 0x36, 0x97, 0xcc, 0xb1, 0x0f, 0x93, 0xea, 0xf5, 0xf2, 0x67, 0x17, 0xfc,
+	0x79, 0xb5, 0x2c, 0xf8, 0x06, 0xfc, 0x7a, 0x21, 0x30, 0xa8, 0x0a, 0xee, 0xef, 0x48, 0x38, 0xa9,
+	0xa9, 0xb8, 0xda, 0x72, 0xe5, 0x08, 0xa3, 0x23, 0x7c, 0x0f, 0x27, 0xad, 0xa9, 0xc2, 0xa7, 0xad,
+	0x12, 0x7b, 0x4b, 0x10, 0x9e, 0x1e, 0x88, 0x3a, 0x83, 0xd1, 0x11, 0xbe, 0x85, 0x07, 0x55, 0x2b,
+	0x71, 0xda, 0x24, 0xb7, 0x66, 0x29, 0x0c, 0xee, 0x07, 0xea, 0x02, 0xaf, 0x61, 0x50, 0x5e, 0x1b,
+	0x3e, 0xa9, 0xd2, 0xda, 0x5d, 0x0b, 0xa7, 0xf7, 0xf0, 0xea, 0xeb, 0x77, 0x2f, 0x21, 0x90, 0x6a,
+	0x39, 0xbb, 0x66, 0x57, 0x2a, 0xa3, 0x0b, 0x9d, 0xde, 0x5c, 0x2c, 0x65, 0x99, 0xfd, 0x75, 0xd2,
+	0x42, 0x5f, 0x38, 0xf4, 0xca, 0xfd, 0x66, 0x5e, 0xfd, 0x0a, 0x00, 0x00, 0xff, 0xff, 0x0e, 0xbf,
+	0x1e, 0xf9, 0x80, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -242,6 +473,8 @@ const _ = grpc.SupportPackageIsVersion4
 type ChaincodeClient interface {
 	InstallCC(ctx context.Context, in *InstallCCRequest, opts ...grpc.CallOption) (*ServerStatus, error)
 	InstantiateCC(ctx context.Context, in *InstantiateCCRequest, opts ...grpc.CallOption) (*InstantiateCCResponse, error)
+	InvokeCC(ctx context.Context, in *InvokeCCRequest, opts ...grpc.CallOption) (*InvokeCCResponse, error)
+	QueryCC(ctx context.Context, in *QueryCCRequest, opts ...grpc.CallOption) (*QueryCCResponse, error)
 }
 
 type chaincodeClient struct {
@@ -270,10 +503,30 @@ func (c *chaincodeClient) InstantiateCC(ctx context.Context, in *InstantiateCCRe
 	return out, nil
 }
 
+func (c *chaincodeClient) InvokeCC(ctx context.Context, in *InvokeCCRequest, opts ...grpc.CallOption) (*InvokeCCResponse, error) {
+	out := new(InvokeCCResponse)
+	err := c.cc.Invoke(ctx, "/protos.Chaincode/InvokeCC", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chaincodeClient) QueryCC(ctx context.Context, in *QueryCCRequest, opts ...grpc.CallOption) (*QueryCCResponse, error) {
+	out := new(QueryCCResponse)
+	err := c.cc.Invoke(ctx, "/protos.Chaincode/QueryCC", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ChaincodeServer is the server API for Chaincode service.
 type ChaincodeServer interface {
 	InstallCC(context.Context, *InstallCCRequest) (*ServerStatus, error)
 	InstantiateCC(context.Context, *InstantiateCCRequest) (*InstantiateCCResponse, error)
+	InvokeCC(context.Context, *InvokeCCRequest) (*InvokeCCResponse, error)
+	QueryCC(context.Context, *QueryCCRequest) (*QueryCCResponse, error)
 }
 
 func RegisterChaincodeServer(s *grpc.Server, srv ChaincodeServer) {
@@ -316,6 +569,42 @@ func _Chaincode_InstantiateCC_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Chaincode_InvokeCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(InvokeCCRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChaincodeServer).InvokeCC(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Chaincode/InvokeCC",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChaincodeServer).InvokeCC(ctx, req.(*InvokeCCRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Chaincode_QueryCC_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCCRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ChaincodeServer).QueryCC(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Chaincode/QueryCC",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ChaincodeServer).QueryCC(ctx, req.(*QueryCCRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Chaincode_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "protos.Chaincode",
 	HandlerType: (*ChaincodeServer)(nil),
@@ -327,6 +616,14 @@ var _Chaincode_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "InstantiateCC",
 			Handler:    _Chaincode_InstantiateCC_Handler,
+		},
+		{
+			MethodName: "InvokeCC",
+			Handler:    _Chaincode_InvokeCC_Handler,
+		},
+		{
+			MethodName: "QueryCC",
+			Handler:    _Chaincode_QueryCC_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

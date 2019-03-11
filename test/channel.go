@@ -16,7 +16,7 @@ func CreateChannel(channelId string) (pb.StatusCode, error) {
 	body := &pb.CreateChannelRequest{ChannelId: channelId}
 
 	r, err := c.CreateChannel(context, body)
-	fmt.Printf("StatusCode: %s, transaction id: %s, err: %v", r.Status, r.TransactionId, err)
+	fmt.Printf("StatusCode: %s, transaction id: %s, err: %v\n", r.Status, r.TransactionId, err)
 	return r.Status, err
 }
 
@@ -29,6 +29,6 @@ func JoinChannel(channelId string) (pb.StatusCode, error) {
 	body := &pb.JoinChannelRequest{ChannelId: channelId}
 
 	r, err := c.JoinChannel(context, body)
-	fmt.Printf("StatusCode: %s, err: %v", r.Status, err)
+	fmt.Printf("StatusCode: %s, err: %v\n", r.Status, err)
 	return r.Status, err
 }

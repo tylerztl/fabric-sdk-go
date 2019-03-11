@@ -24,5 +24,15 @@ func (c *ChaincdoeService) InstallCC(ctx context.Context, r *pb.InstallCCRequest
 
 func (c *ChaincdoeService) InstantiateCC(ctx context.Context, r *pb.InstantiateCCRequest) (*pb.InstantiateCCResponse, error) {
 	transactionID, code, err := c.provider.InstantiateCC(r.ChannelId, r.CcId, r.CcVersion, r.CcPath, r.Args)
-	return &pb.InstantiateCCResponse{Status: code, TransactionId: transactionID}, err
+	return &pb.InstantiateCCResponse{Status: code, TransactionId: string(transactionID)}, err
+}
+
+func (c *ChaincdoeService) InvokeCC(ctx context.Context, r *pb.InvokeCCRequest) (*pb.InvokeCCResponse, error) {
+	transactionID, code, err := c.provider.InvokeCC(r.ChannelId, r.CcId, r.Func, r.Args)
+	return &pb.InvokeCCResponse{Status: code, TransactionId: string(transactionID)}, err
+}
+
+func (c *ChaincdoeService) QueryCC(ctx context.Context, r *pb.QueryCCRequest) (*pb.QueryCCResponse, error) {
+	payload, code, err := c.provider.QueryCC(r.ChannelId, r.CcId,r.Func, r.Args)
+	return &pb.QueryCCResponse{Status: code, Payload: payload}, err
 }
