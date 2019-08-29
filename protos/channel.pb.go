@@ -8,6 +8,8 @@ import (
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	grpc "google.golang.org/grpc"
+	codes "google.golang.org/grpc/codes"
+	status "google.golang.org/grpc/status"
 	math "math"
 )
 
@@ -222,6 +224,17 @@ func (c *channelClient) JoinChannel(ctx context.Context, in *JoinChannelRequest,
 type ChannelServer interface {
 	CreateChannel(context.Context, *CreateChannelRequest) (*CreateChannelResponse, error)
 	JoinChannel(context.Context, *JoinChannelRequest) (*ServerStatus, error)
+}
+
+// UnimplementedChannelServer can be embedded to have forward compatible implementations.
+type UnimplementedChannelServer struct {
+}
+
+func (*UnimplementedChannelServer) CreateChannel(ctx context.Context, req *CreateChannelRequest) (*CreateChannelResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateChannel not implemented")
+}
+func (*UnimplementedChannelServer) JoinChannel(ctx context.Context, req *JoinChannelRequest) (*ServerStatus, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method JoinChannel not implemented")
 }
 
 func RegisterChannelServer(s *grpc.Server, srv ChannelServer) {

@@ -161,13 +161,13 @@ func (f *FabSdkProvider) InstantiateCC(channelID, ccID, ccVersion, ccPath string
 	return helpers.TransactionID(resp.TransactionID), pb.StatusCode_SUCCESS, nil
 }
 
-func (f *FabSdkProvider) InvokeCC(channelID, ccID, function string, args [][]byte) (helpers.TransactionID, pb.StatusCode, error) {
+func (f *FabSdkProvider) InvokeCC(channelID, ccID, function string, args [][]byte) ([]byte, helpers.TransactionID, pb.StatusCode, error) {
 	orgName := f.DefaultOrg
 	// Org resource management client
 	orgInstance, ok := f.Org[orgName]
 	if !ok {
 		logger.Error("Not found resource management client for org: %s", orgName)
-		return "", pb.StatusCode_NOT_FOUND_ORG_INSTANCE, fmt.Errorf("Not found org instance for org:  %v", orgName)
+		return nil, "", pb.StatusCode_NOT_FOUND_ORG_INSTANCE, fmt.Errorf("Not found org instance for org:  %v", orgName)
 	}
 	//prepare context
 	userContext := f.Sdk.ChannelContext(channelID, fabsdk.WithUser(orgInstance.User), fabsdk.WithOrg(orgName))
@@ -175,7 +175,7 @@ func (f *FabSdkProvider) InvokeCC(channelID, ccID, function string, args [][]byt
 	chClient, err := channel.New(userContext)
 	if err != nil {
 		logger.Error("Failed to create new channel client: %v", err)
-		return "", pb.StatusCode_INVALID_USER_CLIENT, fmt.Errorf("Failed to create new channel client:  %s", orgName)
+		return nil, "", pb.StatusCode_INVALID_USER_CLIENT, fmt.Errorf("Failed to create new channel client:  %s", orgName)
 	}
 	// Synchronous transaction
 	response, err := chClient.Execute(
@@ -187,10 +187,10 @@ func (f *FabSdkProvider) InvokeCC(channelID, ccID, function string, args [][]byt
 		channel.WithRetry(retry.DefaultChannelOpts))
 	if err != nil {
 		logger.Error("Failed InvokeCC: %s", err)
-		return "", pb.StatusCode_FAILED_INVOKE_CC, err
+		return nil, "", pb.StatusCode_FAILED_INVOKE_CC, err
 	}
 	logger.Debug("Successfully invoke chaincode  [%s:%v]", ccID, function)
-	return helpers.TransactionID(response.TransactionID), pb.StatusCode_SUCCESS, nil
+	return response.Payload, helpers.TransactionID(response.TransactionID), pb.StatusCode_SUCCESS, nil
 }
 
 func (f *FabSdkProvider) QueryCC(channelID, ccID, function string, args [][]byte) ([]byte, pb.StatusCode, error) {

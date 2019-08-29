@@ -28,8 +28,8 @@ func (c *ChaincdoeService) InstantiateCC(ctx context.Context, r *pb.InstantiateC
 }
 
 func (c *ChaincdoeService) InvokeCC(ctx context.Context, r *pb.InvokeCCRequest) (*pb.InvokeCCResponse, error) {
-	transactionID, code, err := c.provider.InvokeCC(r.ChannelId, r.CcId, r.Func, r.Args)
-	return &pb.InvokeCCResponse{Status: code, TransactionId: string(transactionID)}, err
+	payload, transactionID, code, err := c.provider.InvokeCC(r.ChannelId, r.CcId, r.Func, r.Args)
+	return &pb.InvokeCCResponse{Status: code, TransactionId: string(transactionID), Payload: payload}, err
 }
 
 func (c *ChaincdoeService) QueryCC(ctx context.Context, r *pb.QueryCCRequest) (*pb.QueryCCResponse, error) {
