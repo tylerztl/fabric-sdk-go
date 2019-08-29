@@ -1,8 +1,7 @@
 ---
 
 application:
-  logPath: logs/logagent.log
-
+  logPath: logs
   logLevel: 7
   # [admin/default Optional]. Used by create/join/update channel for admin client.
   org:
