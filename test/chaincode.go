@@ -39,6 +39,25 @@ func InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
 	return r.Status, err
 }
 
+func UpgradeCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
+	code pb.StatusCode, err error) {
+	conn := NewConn()
+	defer conn.Close()
+
+	c := pb.NewChaincodeClient(conn)
+	context := context.Background()
+	body := &pb.UpgradeCCRequest{
+		ChannelId: channelID,
+		CcId:      ccID,
+		CcVersion: ccVersion,
+		CcPath:    ccPath,
+		Args:      args}
+
+	r, err := c.UpgradeCC(context, body)
+	fmt.Printf("StatusCode: %s, transaction id: %s, err: %v\n", r.Status, r.TransactionId, err)
+	return r.Status, err
+}
+
 func InvokeCC(channelID, ccID, function string, args [][]byte) (
 	code pb.StatusCode, err error) {
 	conn := NewConn()

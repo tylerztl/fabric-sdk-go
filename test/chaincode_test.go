@@ -20,6 +20,14 @@ func TestInstantiateCC(t *testing.T) {
 	}
 }
 
+func TestUpgradeCC(t *testing.T) {
+	status, err := UpgradeCC("mychannel", "example_cc", "v1",
+		"example_cc/go", [][]byte{[]byte("init"), []byte("a"), []byte("100"), []byte("b"), []byte("200")})
+	if status != pb.StatusCode_SUCCESS || err != nil {
+		t.Error("Upgrade cc failed")
+	}
+}
+
 func TestInvokeCC(t *testing.T) {
 	status, err := InvokeCC("mychannel", "example_cc", "move", [][]byte{[]byte("a"), []byte("b"), []byte("10")})
 	if status != pb.StatusCode_SUCCESS || err != nil {

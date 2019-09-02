@@ -26,6 +26,7 @@ enum StatusCode {
     NOT_FOUND_ORG_INSTANCE = 12;
     FAILED_INVOKE_CC = 13;
     FAILED_QUERY_CC = 14;
+    FAILED_UPGRADE_CC = 15;
 }
 
 message ServerStatus {

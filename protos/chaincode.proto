@@ -19,6 +19,8 @@ service Chaincode {
     }
     rpc InstantiateCC (InstantiateCCRequest) returns (InstantiateCCResponse) {
     }
+    rpc UpgradeCC (UpgradeCCRequest) returns (UpgradeCCResponse) {
+    }
     rpc InvokeCC (InvokeCCRequest) returns (InvokeCCResponse) {
     }
     rpc QueryCC (QueryCCRequest) returns (QueryCCResponse) {
@@ -40,6 +42,19 @@ message InstantiateCCRequest {
 }
 
 message InstantiateCCResponse {
+    StatusCode status = 1;
+    string transaction_id = 2;
+}
+
+message UpgradeCCRequest {
+    string channel_id = 1;
+    string cc_id = 2;
+    string cc_version = 3;
+    string cc_path = 4;
+    repeated bytes args = 5;
+}
+
+message UpgradeCCResponse {
     StatusCode status = 1;
     string transaction_id = 2;
 }

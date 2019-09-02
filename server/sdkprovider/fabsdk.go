@@ -157,7 +157,31 @@ func (f *FabSdkProvider) InstantiateCC(channelID, ccID, ccVersion, ccPath string
 		logger.Error("Failed InstantiateCC: %s", err)
 		return "", pb.StatusCode_FAILED_INSTANTIATE_CC, err
 	}
-	logger.Debug("Successfully instantiate chaincode  [%s-%s]", ccID, ccVersion)
+	logger.Debug("Successfully instantiate chaincode  [%s:%s]", ccID, ccVersion)
+	return helpers.TransactionID(resp.TransactionID), pb.StatusCode_SUCCESS, nil
+}
+
+func (f *FabSdkProvider) UpgradeCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (helpers.TransactionID, pb.StatusCode, error) {
+	orgName := f.DefaultOrg
+	// Org resource management client
+	orgInstance, ok := f.Org[orgName]
+	if !ok {
+		logger.Error("Not found resource management client for org: %s", orgName)
+		return "", pb.StatusCode_INVALID_ADMIN_CLIENT, fmt.Errorf("Not found admin client for org:  %v", orgName)
+	}
+	// Set up chaincode policy
+	ccPolicy := cauthdsl.SignedByAnyMember([]string{"Org1MSP"})
+	// Org resource manager will instantiate 'example_cc' on channel
+	resp, err := orgInstance.AdminClient.UpgradeCC(
+		channelID,
+		resmgmt.UpgradeCCRequest{Name: ccID, Path: ccPath, Version: ccVersion, Args: args, Policy: ccPolicy},
+		resmgmt.WithRetry(retry.DefaultResMgmtOpts),
+	)
+	if err != nil {
+		logger.Error("Failed UpgradeCC: %s", err)
+		return "", pb.StatusCode_FAILED_UPGRADE_CC, err
+	}
+	logger.Debug("Successfully upgrade chaincode  [%s:%s]", ccID, ccVersion)
 	return helpers.TransactionID(resp.TransactionID), pb.StatusCode_SUCCESS, nil
 }
 
@@ -189,7 +213,8 @@ func (f *FabSdkProvider) InvokeCC(channelID, ccID, function string, args [][]byt
 		logger.Error("Failed InvokeCC: %s", err)
 		return nil, "", pb.StatusCode_FAILED_INVOKE_CC, err
 	}
-	logger.Debug("Successfully invoke chaincode  [%s:%v]", ccID, function)
+	logger.Debug("Successfully invoke chaincode  ccName[%s] func[%v] txId[%v] payload[%v]",
+		ccID, function, response.TransactionID, response.Payload)
 	return response.Payload, helpers.TransactionID(response.TransactionID), pb.StatusCode_SUCCESS, nil
 }
 
@@ -216,6 +241,8 @@ func (f *FabSdkProvider) QueryCC(channelID, ccID, function string, args [][]byte
 		logger.Error("Failed QueryCC: %s", err)
 		return nil, pb.StatusCode_FAILED_QUERY_CC, err
 	}
-	logger.Debug("Successfully query chaincode  [%s:%v]", ccID, function)
+
+	logger.Debug("Successfully query chaincode  ccName[%s] func[%v] payload[%v]",
+		ccID, function, response.Payload)
 	return response.Payload, pb.StatusCode_SUCCESS, nil
 }

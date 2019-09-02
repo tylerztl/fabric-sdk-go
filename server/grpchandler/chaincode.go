@@ -27,6 +27,11 @@ func (c *ChaincdoeService) InstantiateCC(ctx context.Context, r *pb.InstantiateC
 	return &pb.InstantiateCCResponse{Status: code, TransactionId: string(transactionID)}, err
 }
 
+func (c *ChaincdoeService) UpgradeCC(ctx context.Context, r *pb.UpgradeCCRequest) (*pb.UpgradeCCResponse, error) {
+	transactionID, code, err := c.provider.UpgradeCC(r.ChannelId, r.CcId, r.CcVersion, r.CcPath, r.Args)
+	return &pb.UpgradeCCResponse{Status: code, TransactionId: string(transactionID)}, err
+}
+
 func (c *ChaincdoeService) InvokeCC(ctx context.Context, r *pb.InvokeCCRequest) (*pb.InvokeCCResponse, error) {
 	payload, transactionID, code, err := c.provider.InvokeCC(r.ChannelId, r.CcId, r.Func, r.Args)
 	return &pb.InvokeCCResponse{Status: code, TransactionId: string(transactionID), Payload: payload}, err
