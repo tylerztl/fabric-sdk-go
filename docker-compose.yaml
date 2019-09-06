@@ -13,5 +13,5 @@ services:
       - 8082:8080
     volumes:
       - ./conf:/go/src/fabric-sdk-go/conf
-      - ./artifacts/channel:/go/src/fabric-sdk-go/artifacts/channel
+      - ./artifacts:/go/src/fabric-sdk-go/artifacts
       - /tmp/fabric-server-logs:/go/src/fabric-sdk-go/logs

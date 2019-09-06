@@ -20,7 +20,7 @@ func InstallCC(ccID, ccVersion, ccPath string) (pb.StatusCode, error) {
 	return r.Status, err
 }
 
-func InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
+func InstantiateCC(channelID, ccID, ccVersion, ccPath, ccPolicy string, args [][]byte) (
 	code pb.StatusCode, err error) {
 	conn := NewConn()
 	defer conn.Close()
@@ -32,6 +32,7 @@ func InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
 		CcId:      ccID,
 		CcVersion: ccVersion,
 		CcPath:    ccPath,
+		CcPolicy:  ccPolicy,
 		Args:      args}
 
 	r, err := c.InstantiateCC(context, body)
@@ -39,7 +40,7 @@ func InstantiateCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
 	return r.Status, err
 }
 
-func UpgradeCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
+func UpgradeCC(channelID, ccID, ccVersion, ccPath, ccPolicy string, args [][]byte) (
 	code pb.StatusCode, err error) {
 	conn := NewConn()
 	defer conn.Close()
@@ -51,6 +52,7 @@ func UpgradeCC(channelID, ccID, ccVersion, ccPath string, args [][]byte) (
 		CcId:      ccID,
 		CcVersion: ccVersion,
 		CcPath:    ccPath,
+		CcPolicy:  ccPolicy,
 		Args:      args}
 
 	r, err := c.UpgradeCC(context, body)

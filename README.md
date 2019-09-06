@@ -23,7 +23,12 @@ make start
 ```
 Running the test suite
 ```
-cd test
+go test -v channel_test.go channel.go client.go -test.run TestCreateChannel
+go test -v channel_test.go channel.go client.go -test.run TestJoinChannel
+go test -v chaincode_test.go chaincode.go client.go -test.run TestInstallCC
+go test -v chaincode_test.go chaincode.go client.go -test.run TestInstantiateCC
+go test -v chaincode_test.go chaincode.go client.go -test.run TestInvokeCC
+...
 ```
 
 ### Directory description

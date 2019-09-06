@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-cd artifacts
+cd artifacts/network
 
 # Parse commandline args
 while getopts "h?m:c:t:d:f:s:l:" opt; do

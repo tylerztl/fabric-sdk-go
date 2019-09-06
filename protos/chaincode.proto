@@ -39,6 +39,7 @@ message InstantiateCCRequest {
     string cc_version = 3;
     string cc_path = 4;
     repeated bytes args = 5;
+    string cc_policy = 6;
 }
 
 message InstantiateCCResponse {
@@ -52,6 +53,7 @@ message UpgradeCCRequest {
     string cc_version = 3;
     string cc_path = 4;
     repeated bytes args = 5;
+    string cc_policy = 6;
 }
 
 message UpgradeCCResponse {

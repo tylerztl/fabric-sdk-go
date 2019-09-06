@@ -23,12 +23,12 @@ func (c *ChaincdoeService) InstallCC(ctx context.Context, r *pb.InstallCCRequest
 }
 
 func (c *ChaincdoeService) InstantiateCC(ctx context.Context, r *pb.InstantiateCCRequest) (*pb.InstantiateCCResponse, error) {
-	transactionID, code, err := c.provider.InstantiateCC(r.ChannelId, r.CcId, r.CcVersion, r.CcPath, r.Args)
+	transactionID, code, err := c.provider.InstantiateCC(r.ChannelId, r.CcId, r.CcVersion, r.CcPath, r.CcPolicy, r.Args)
 	return &pb.InstantiateCCResponse{Status: code, TransactionId: string(transactionID)}, err
 }
 
 func (c *ChaincdoeService) UpgradeCC(ctx context.Context, r *pb.UpgradeCCRequest) (*pb.UpgradeCCResponse, error) {
-	transactionID, code, err := c.provider.UpgradeCC(r.ChannelId, r.CcId, r.CcVersion, r.CcPath, r.Args)
+	transactionID, code, err := c.provider.UpgradeCC(r.ChannelId, r.CcId, r.CcVersion, r.CcPath, r.CcPolicy, r.Args)
 	return &pb.UpgradeCCResponse{Status: code, TransactionId: string(transactionID)}, err
 }
 

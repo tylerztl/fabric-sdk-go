@@ -19,7 +19,6 @@ func init() {
 	logger = logs.NewLogger()
 	config := make(map[string]interface{})
 
-
 	logPath := appConfig.Conf.LogPath
 	if logPath == "" {
 		logPath = "logs"

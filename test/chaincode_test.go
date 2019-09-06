@@ -14,7 +14,7 @@ func TestInstallCC(t *testing.T) {
 
 func TestInstantiateCC(t *testing.T) {
 	status, err := InstantiateCC("mychannel", "example_cc", "v0",
-		"example_cc/go", [][]byte{[]byte("init"), []byte("a"), []byte("100"), []byte("b"), []byte("200")})
+		"example_cc/go", "AND ('Org1MSP.member','Org2MSP.member')", [][]byte{[]byte("init"), []byte("a"), []byte("100"), []byte("b"), []byte("200")})
 	if status != pb.StatusCode_SUCCESS || err != nil {
 		t.Error("Instantiate cc failed")
 	}
@@ -22,7 +22,7 @@ func TestInstantiateCC(t *testing.T) {
 
 func TestUpgradeCC(t *testing.T) {
 	status, err := UpgradeCC("mychannel", "example_cc", "v1",
-		"example_cc/go", [][]byte{[]byte("init"), []byte("a"), []byte("100"), []byte("b"), []byte("200")})
+		"example_cc/go", "OutOf (1, 'Org1MSP.member')", [][]byte{[]byte("init"), []byte("a"), []byte("100"), []byte("b"), []byte("200")})
 	if status != pb.StatusCode_SUCCESS || err != nil {
 		t.Error("Upgrade cc failed")
 	}

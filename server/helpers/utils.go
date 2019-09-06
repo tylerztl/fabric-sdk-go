@@ -25,6 +25,6 @@ func GetChannelConfigPath(filename string) string {
 }
 
 func GetDeployPath() string {
-	const ccPath = "conf"
+	const ccPath = "artifacts/chaincode"
 	return path.Join(goPath(), "src", Project, ccPath)
 }
