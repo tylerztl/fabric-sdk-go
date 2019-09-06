@@ -5,13 +5,20 @@
 #
 version: '2'
 
+networks:
+  fabsdk:
+    external:
+      name: net_byfn
+
 services:
   fabric-grpc:
     container_name: fabric-grpc
     image: zhigui/fabric-grpc:latest
     ports:
-      - 8082:8080
+      - 8080:8080
     volumes:
       - ./conf:/go/src/fabric-sdk-go/conf
       - ./artifacts:/go/src/fabric-sdk-go/artifacts
       - /tmp/fabric-server-logs:/go/src/fabric-sdk-go/logs
+    networks:
+      - fabsdk
